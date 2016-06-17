@@ -59,7 +59,7 @@ class TreeView : UIView
         self.height = root.height()
         
         let height =    CGFloat(self.height) * 50
-        let width  =    CGFloat(pow(2.0, Double(self.height)-1))  * 100
+        let width  =    CGFloat(pow(2.0, Double(self.height-1)))  * 60 + 100
         
         super.init(frame: CGRectMake(0,0,width,height))
         
@@ -72,7 +72,7 @@ class TreeView : UIView
         str.drawAtPoint(position, withAttributes:[NSForegroundColorAttributeName:UIColor.greenColor(),NSFontAttributeName:UIFont.systemFontOfSize(18)])
         
         
-        let space:CGFloat = pow((CGFloat(height)-CGFloat(level)),2) * 15 + 15
+        let space:CGFloat = pow(2,(CGFloat(height)-CGFloat(level))) * 15
         
         if node.leftNode != nil
         {
@@ -110,23 +110,33 @@ class TreeView : UIView
     }
 }
 
+extension Array
+{
+    func tree()-> Node?
+    {
+        return createTree(self)
+    }
+    func createTree(array:Array) -> Node?
+    {
+        if array.isEmpty
+        {
+            return nil
+        }
+        
+        let middle = array.count/2
+        let middleNode    = Node(value:array[middle] as! Int)
+        
+        let leftSubArray  = Array(array[0 ..< middle])
+        let rightSubArray = Array(array[middle+1 ..< array.count])
+        
+        middleNode.leftNode  = createTree(leftSubArray)
+        middleNode.rightNode = createTree(rightSubArray)
+        
+        return middleNode;
+    }
+}
 
-let root = Node(value: 18)
-root.leftNode  = Node(value: 12)
-root.rightNode = Node(value: 13)
-root.leftNode?.leftNode   = Node(value: 4)
-root.leftNode?.rightNode  = Node(value: 6)
-root.rightNode?.leftNode  = Node(value: 8)
-root.rightNode?.rightNode = Node(value: 12229)
-root.leftNode?.leftNode?.leftNode    = Node(value: 40)
-root.leftNode?.leftNode?.rightNode   = Node(value: 50)
-root.leftNode?.rightNode?.leftNode   = Node(value: 60)
-root.leftNode?.rightNode?.rightNode  = Node(value: 65)
-root.rightNode?.leftNode?.leftNode   = Node(value: 90)
-root.rightNode?.leftNode?.rightNode  = Node(value: 75)
-root.rightNode?.rightNode?.leftNode  = Node(value: 45)
-root.rightNode?.rightNode?.rightNode = Node(value: 30)
-
-
-TreeView(root: root)
+let array    = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+let root     = array.tree()
+let treeView = TreeView(root: root!)
 
