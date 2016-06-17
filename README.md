@@ -13,6 +13,7 @@
 ### function
 - invert binary tree
 - height
+- count
 - isComplete
 - isFull
 - isBalanced
