@@ -1,4 +1,4 @@
-//: Tree http://zhangxi.me
+//: Binary Tree http://zhangxi.me
 
 import UIKit
 
@@ -13,7 +13,6 @@ class Node
         self.value = value
     }
 
-    
     func preOrderTraverse(action:(node:Node)->())
     {
         action(node: self)
@@ -72,28 +71,24 @@ class Node
             }
         }
     }
+
     func height() -> Int
     {
-        var leftHeight = 1
-        var rightHeight = 1
-        
-        if self.leftNode != nil
-        {
-            leftHeight = self.leftNode!.height() + 1
-        }
-        if self.rightNode != nil
-        {
-            rightHeight = self.rightNode!.height() + 1
-        }
-        return max(leftHeight, rightHeight)
+        let leftHeight  = (self.leftNode?.height() ?? 0) + 1
+        let rightHeight = (self.rightNode?.height() ?? 0) + 1
+        return max(leftHeight,rightHeight)
+    }
+
+    func count() -> Int
+    {
+        let leftCount = self.leftNode?.count() ?? 0
+        let rightCount = self.rightNode?.count() ?? 0
+        return leftCount + rightCount + 1
     }
 
     func invert()
     {
-        let tmp        = self.leftNode
-        self.leftNode  = self.rightNode
-        self.rightNode = tmp
-        
+        swap(&self.leftNode, &self.rightNode)
         self.leftNode?.invert()
         self.rightNode?.invert()
     }
@@ -264,6 +259,7 @@ tree2.treeView()
 tree2.isComplete() //false
 tree2.isFull()     //false
 tree2.isBalanced() //true
+tree2.count()
 
 
 let tree3    = [1,2,3,4].tree()!
