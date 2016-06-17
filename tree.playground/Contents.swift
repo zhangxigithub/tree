@@ -13,23 +13,57 @@ class Node
     }
 
     
-    func preVisit(action:(node:Node)->())
+    func preOrderTraverse(action:(node:Node)->())
     {
         action(node: self)
-        self.leftNode?.preVisit(action)
-        self.rightNode?.preVisit(action)
+        self.leftNode?.preOrderTraverse(action)
+        self.rightNode?.preOrderTraverse(action)
     }
-    func inVisit(action:(node:Node)->())
+    func inOrderTraverse(action:(node:Node)->())
     {
-        self.leftNode?.inVisit(action)
+        self.leftNode?.inOrderTraverse(action)
         action(node: self)
-        self.rightNode?.inVisit(action)
+        self.rightNode?.inOrderTraverse(action)
     }
-    func postVisit(action:(node:Node)->())
+    func postOrderTraverse(action:(node:Node)->())
     {
-        self.leftNode?.postVisit(action)
-        self.rightNode?.postVisit(action)
+        self.leftNode?.postOrderTraverse(action)
+        self.rightNode?.postOrderTraverse(action)
         action(node: self)
+    }
+    func levelOrderTraverse(action:(node:Node)->())
+    {
+        action(node: self)
+        
+        var currentLevel = [self]
+        var nextLevel    = [Node]()
+        
+        if self.leftNode != nil
+        {
+            nextLevel.append(self.leftNode!)
+        }
+        if self.rightNode != nil
+        {
+            nextLevel.append(self.rightNode!)
+        }
+        
+        while nextLevel.isEmpty == false {
+            currentLevel = nextLevel
+            nextLevel.removeAll()
+            
+            for node in currentLevel
+            {
+                if node.leftNode != nil
+                {
+                    nextLevel.append(node.leftNode!)
+                }
+                if node.rightNode != nil
+                {
+                    nextLevel.append(node.rightNode!)
+                }
+                action(node:node)
+            }
+        }
     }
     func height() -> Int
     {
@@ -124,7 +158,7 @@ class TreeView : UIView
 
 extension Array
 {
-    func tree()-> Node?
+    func tree(array:Array? = nil)-> Node?
     {
         return createTree(self)
     }
@@ -154,5 +188,8 @@ root.treeView()
 root.invert()
 root.treeView()
 root.leftNode?.treeView()
-
-
+var levelOrder = [Int]()
+root.levelOrderTraverse { (node) in
+    levelOrder.append(node.value)
+}
+print(levelOrder)
