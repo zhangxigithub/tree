@@ -31,7 +31,9 @@ class Node
         self.rightNode?.postOrderTraverse(action)
         action(node: self)
     }
-    func levelOrderTraverse(action:(node:Node)->(Bool))
+    typealias TraversalAction = (node:Node)->(Bool)
+    
+    func levelOrderTraverse(action:TraversalAction)
     {
         if action(node: self) == false
         {
@@ -97,17 +99,21 @@ class Node
         var full = true
         self.levelOrderTraverse { (node) in
             
-            if (node.leftNode == nil && node.rightNode != nil) ||
-               (node.leftNode != nil && node.rightNode == nil)
+            if((node.leftNode == nil) && (node.rightNode == nil)) ||
+              ((node.leftNode != nil) && (node.rightNode != nil))
+            {
+                return true
+            }else
             {
                 full = false
+                return false
             }
-            return true
         }
         return full
     }
     func isComplete() -> Bool
     {
+
         var lastNode = false
         var complete = true
         
