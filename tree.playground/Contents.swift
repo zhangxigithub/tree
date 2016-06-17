@@ -4,8 +4,9 @@ import UIKit
 
 class Node
 {
-    var leftNode,rightNode:Node?
-    var value:Int = 0
+    var leftNode:Node? = nil
+    var rightNode:Node? = nil
+    var value:AnyObject?
     
     init(value:Int)
     {
@@ -31,9 +32,12 @@ class Node
         self.rightNode?.postOrderTraverse(action)
         action(node: self)
     }
-    func levelOrderTraverse(action:(node:Node)->())
+    func levelOrderTraverse(action:(node:Node)->(Bool))
     {
-        action(node: self)
+        if action(node: self) == false
+        {
+            return
+        }
         
         var currentLevel = [self]
         var nextLevel    = [Node]()
@@ -61,7 +65,10 @@ class Node
                 {
                     nextLevel.append(node.rightNode!)
                 }
-                action(node:node)
+                if action(node: node) == false
+                {
+                    return
+                }
             }
         }
     }
@@ -80,9 +87,7 @@ class Node
         }
         return max(leftHeight, rightHeight)
     }
-    func treeView() -> TreeView {
-        return TreeView(root:self)
-    }
+
     func invert()
     {
         let tmp        = self.leftNode
@@ -91,6 +96,64 @@ class Node
         
         self.leftNode?.invert()
         self.rightNode?.invert()
+    }
+    func isFull() -> Bool
+    {
+        var full = true
+        self.levelOrderTraverse { (node) in
+            
+            if (node.leftNode == nil && node.rightNode != nil) ||
+               (node.leftNode != nil && node.rightNode == nil)
+            {
+                full = false
+            }
+            return true
+        }
+        return full
+    }
+    func isComplete() -> Bool
+    {
+        var lastNode = false
+        var complete = true
+        
+        self.levelOrderTraverse { (node) in
+            
+            if lastNode == false && (node.leftNode == nil || node.rightNode == nil)
+            {
+                lastNode = true
+            }else if lastNode && (node.leftNode != nil || node.rightNode != nil)
+            {
+                complete = false
+                return false
+            }
+            return true
+         }
+        return complete
+    }
+    func isBalanced() -> Bool
+    {
+        func balance(node:Node) -> Bool
+        {
+            let leftHeight  = node.leftNode?.height() ?? 0
+            let rightHeight = node.rightNode?.height() ?? 0
+        
+            if abs(leftHeight-rightHeight) > 1
+            {
+                return false
+            }else
+            {
+                if node.leftNode == nil && node.rightNode == nil
+                {
+                    return true
+                }
+                return (node.leftNode?.isBalanced() ?? true) && (node.rightNode?.isBalanced() ?? true)
+            }
+        }
+        return balance(self)
+    }
+    
+    func treeView() -> TreeView {
+        return TreeView(root:self)
     }
 }
 
@@ -114,7 +177,7 @@ class TreeView : UIView
     func preOrderCreatNode(node:Node,position:CGPoint,level:Int)
     {
         //draw the node
-        let str = String(node.value) as NSString
+        let str = String(node.value as! Int) as NSString
         str.drawAtPoint(position, withAttributes:[NSForegroundColorAttributeName:UIColor.greenColor(),NSFontAttributeName:UIFont.systemFontOfSize(18)])
         
         
@@ -182,14 +245,30 @@ extension Array
     }
 }
 
-let array    = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
-let root     = array.tree()!
-root.treeView()
-root.invert()
-root.treeView()
-root.leftNode?.treeView()
-var levelOrder = [Int]()
-root.levelOrderTraverse { (node) in
-    levelOrder.append(node.value)
-}
-print(levelOrder)
+let tree0    = [1].tree()!
+tree0.treeView()
+tree0.isComplete() //true
+tree0.isFull()     //true
+tree0.isBalanced() //true
+
+
+let tree1    = [1,2,3,4,5,6,7].tree()!
+tree1.treeView()
+tree1.isComplete() //true
+tree1.isFull()     //true
+tree1.isBalanced() //true
+
+
+let tree2    = [1,2,3,4,5,6,7,8,9].tree()!
+tree2.treeView()
+tree2.isComplete() //false
+tree2.isFull()     //false
+tree2.isBalanced() //true
+
+
+let tree3    = [1,2,3,4].tree()!
+tree3.leftNode?.leftNode?.rightNode = Node(value: 5)
+tree3.treeView()
+tree3.isComplete() //false
+tree3.isFull()     //false
+tree3.isBalanced() //false
