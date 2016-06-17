@@ -49,6 +49,15 @@ class Node
     func treeView() -> TreeView {
         return TreeView(root:self)
     }
+    func invert()
+    {
+        let tmp        = self.leftNode
+        self.leftNode  = self.rightNode
+        self.rightNode = tmp
+        
+        self.leftNode?.invert()
+        self.rightNode?.invert()
+    }
 }
 
 class TreeView : UIView
@@ -140,8 +149,10 @@ extension Array
 }
 
 let array    = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
-let root     = array.tree()
-let treeView = root?.treeView()
-let treeView2 = root?.leftNode?.treeView()
+let root     = array.tree()!
+root.treeView()
+root.invert()
+root.treeView()
+root.leftNode?.treeView()
 
 
