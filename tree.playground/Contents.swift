@@ -46,6 +46,9 @@ class Node
         }
         return max(leftHeight, rightHeight)
     }
+    func treeView() -> TreeView {
+        return TreeView(root:self)
+    }
 }
 
 class TreeView : UIView
@@ -138,5 +141,7 @@ extension Array
 
 let array    = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
 let root     = array.tree()
-let treeView = TreeView(root: root!)
+let treeView = root?.treeView()
+let treeView2 = root?.leftNode?.treeView()
+
 
