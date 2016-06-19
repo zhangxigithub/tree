@@ -11,7 +11,7 @@
 - level-order traversal
 
 ### function
-- invert binary tree
+- invert
 - height
 - count
 - isComplete
@@ -19,5 +19,6 @@
 - isBalanced
 
 ### tools
-- Array to binary tree
-- binary to UIView
+- Array to Binary Tree
+- Array to Binary Sort Tree
+- Binary Tree to UIView

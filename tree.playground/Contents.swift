@@ -8,7 +8,7 @@ class Node
     var rightNode:Node? = nil
     var value:AnyObject?
     
-    init(value:Int)
+    init(value:AnyObject?)
     {
         self.value = value
     }
@@ -31,6 +31,7 @@ class Node
         self.rightNode?.postOrderTraverse(action)
         action(node: self)
     }
+    
     typealias TraversalAction = (node:Node)->(Bool)
     
     func levelOrderTraverse(action:TraversalAction)
@@ -244,6 +245,49 @@ extension Array
         
         return middleNode;
     }
+    func binarySortTree() -> Node?
+    {
+        if self.count == 0
+        {
+            return nil
+        }
+        var root = Node(value:self.first as? AnyObject)
+        func insertNode(node:Node,to:Node)
+        {
+            let order = (node.value as! Int) >= (to.value as! Int)
+            
+            if order
+            {
+                if to.rightNode == nil
+                {
+                    to.rightNode = node
+                }else
+                {
+                    insertNode(node, to: to.rightNode!)
+                }
+            }else
+            {
+                if to.leftNode == nil
+                {
+                    to.leftNode = node
+                }else
+                {
+                    insertNode(node, to: to.leftNode!)
+                }
+            }
+        }
+        
+        
+        
+        for index in 1 ..< self.count
+        {
+            let newNode = Node(value:self[index] as? AnyObject)
+            insertNode(newNode, to: root)
+        }
+
+        
+        return root
+    }
 }
 
 let tree0    = [1].tree()!
@@ -274,3 +318,18 @@ tree3.treeView()
 tree3.isComplete() //false
 tree3.isFull()     //false
 tree3.isBalanced() //false
+
+
+
+
+
+
+
+
+let disorderlyArray = [10,3,55,2,1,9,86,30,32,44,54,13,28]
+var tree4 = disorderlyArray.binarySortTree()!
+tree4.treeView()
+
+tree4.inOrderTraverse { (node) in
+    print(node.value!)//1,2,3,9,10...
+}
